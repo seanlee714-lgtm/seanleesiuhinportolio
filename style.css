@@ -1,0 +1,105 @@
+/* reset */
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+
+/* Layout: black index. Each project = hairline, name at left (click for a short brief), discipline at the halfway line,
+   then the work on a two-column grid. Collections open full screen. Deliberately dark-only. */
+:root {
+  --bg: #000000;
+  --panel: #000000;
+  --ink: #ededed;
+  --dim: #8a8a8a;
+  --rule: #3c3c3c;
+  --sans: "Schibsted Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --gut: clamp(16px, 1.6vw, 32px);
+  --gap: clamp(8px, 0.8vw, 16px);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: clamp(0.95rem, 1vw, 1.08rem); line-height: 1.3; -webkit-font-smoothing: antialiased; }
+.wrap {
+  padding-left: max(var(--gut), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--gut), env(safe-area-inset-right, 0px));
+  padding-block: 28px 96px;
+}
+a { color: inherit; text-decoration: none; }
+a:hover { color: var(--dim); }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-align: left; }
+:focus-visible { outline: 1px solid var(--ink); outline-offset: 3px; }
+
+/* label row: name at 0, discipline at 50% */
+.label { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); border-top: 1px solid var(--rule); padding-top: 10px; }
+.label > * { min-width: 0; }
+.label .r { display: grid; }
+.label .l { display: grid; }
+.label .dim { color: var(--dim); }
+.label .r .gap { margin-top: 0.8em; }
+.label .r span, .label .r a { color: var(--dim); }
+.label .r a:hover { color: var(--ink); }
+.name { display: inline-flex; gap: 0.5em; align-items: baseline; }
+.name i { font-style: normal; color: var(--dim); transition: transform .2s; display: inline-block; }
+.name[aria-expanded="true"] i { transform: rotate(45deg); }
+.name:hover i { color: var(--ink); }
+.brief { grid-column: 1 / -1; max-width: 46em; color: var(--dim); padding-top: 14px; text-wrap: pretty; }
+.brief p { margin: 0; }
+.brief p + p { margin-top: 0.6em; }
+.brief b { font-weight: 400; color: var(--ink); }
+
+.facts { margin: 16px 0 0; display: grid; grid-template-columns: 8em minmax(0, 1fr); gap: 8px var(--gap); border-top: 1px solid var(--rule); padding-top: 12px; }
+.facts dt { color: var(--dim); }
+.facts dd { margin: 0; color: var(--ink); }
+@media (max-width: 560px) { .facts { grid-template-columns: minmax(0, 1fr); gap: 2px; } .facts dd + dt { margin-top: 10px; } }
+
+.project { margin-top: clamp(64px, 7vw, 110px); scroll-margin-top: 16px; }
+.grid { margin-top: 14px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); }
+
+/* panels: work centred inside at a common height */
+.panel { background: var(--panel); aspect-ratio: 1.41; max-width: 100%; display: flex; align-items: center; justify-content: center; gap: 2.4%; padding-inline: 4%; overflow: hidden; }
+.panel.wide { grid-column: 1 / -1; aspect-ratio: 2.86; }
+.panel > * { flex: none; height: 80%; width: auto; max-width: none; }
+.panel.wide > * { height: 82%; }
+.panel.film > * { height: 76%; }
+.panel:not(.wide) > .slide, .panel.film:not(.wide) > * { height: auto; width: 86%; }
+.panel img { display: block; object-fit: contain; }
+.tile { background: var(--panel) no-repeat center / cover; }
+.tile.half { background-size: 200% 100%; }
+.post { aspect-ratio: 559 / 740; }
+.slide { aspect-ratio: 1800 / 1014; }
+
+/* openable collections */
+.open { position: relative; display: grid; gap: 10px; align-content: start; width: 100%; min-width: 0; }
+.open .panel > * { transition: opacity .25s; }
+.open:hover .panel > * { opacity: .82; }
+.open .cap { display: flex; justify-content: space-between; gap: 12px; color: var(--dim); }
+.open:hover .cap span:last-child { color: var(--ink); }
+.open.wide { grid-column: 1 / -1; }
+
+.reel { position: relative; aspect-ratio: 9 / 16.4; background: #000; cursor: pointer; }
+.reel video, video.still { width: 100%; height: 100%; object-fit: cover; display: block; }
+video.still { aspect-ratio: 9 / 16.4; }
+.reel .snd { position: absolute; left: 8px; bottom: 8px; font: 400 0.68rem/1 var(--sans); color: #fff; background: rgba(0,0,0,.55); padding: 5px 7px; border: 0; cursor: pointer; opacity: 0; transition: opacity .2s; }
+.reel:hover .snd, .reel .snd:focus-visible, .reel.on .snd { opacity: 1; }
+
+/* full-screen viewer */
+dialog { border: 0; padding: 0; margin: 0; width: 100%; max-width: 100%; height: 100%; max-height: 100%; background: var(--bg); color: var(--ink); }
+dialog::backdrop { background: var(--bg); }
+.viewer { height: 100%; overflow-y: auto; padding-top: max(20px, env(safe-area-inset-top, 0px)); padding-bottom: 64px; padding-left: max(var(--gut), env(safe-area-inset-left, 0px)); padding-right: max(var(--gut), env(safe-area-inset-right, 0px)); }
+.viewer .label { position: sticky; top: 0; background: var(--bg); padding-bottom: 10px; z-index: 2; }
+.viewer .close { color: var(--dim); }
+.viewer .close:hover { color: var(--ink); }
+.pages { margin: 20px auto 0; max-width: 1400px; display: grid; gap: var(--gap); }
+.pages img { width: 100%; height: auto; display: block; }
+.reels { margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(220px, 44vw), 1fr)); gap: var(--gap); }
+.posts { margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 44vw), 1fr)); gap: var(--gap); }
+.posts > * { width: 100%; }
+.posts img { width: 100%; height: auto; display: block; }
+
+.foot { margin-top: clamp(96px, 10vw, 160px); }
+
+@media (max-width: 760px) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .panel.wide { aspect-ratio: 1.1; justify-content: flex-start; overflow-x: auto; scrollbar-width: none; }
+  .panel.wide::-webkit-scrollbar { display: none; }
+  .panel.wide.film, .panel.wide.fit { aspect-ratio: 1.41; justify-content: center; }
+  .panel.wide.fit > * { height: auto; width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
